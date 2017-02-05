@@ -1,20 +1,14 @@
 import express = require('express')
-const promise = require('bluebird')
 const path = require('path');
+const bodyParser = require('body-parser')
+import { getAllPosts, getOnePost, createNewPost, deletePostById } from './postgres'
+
 const app = express()
-const pg = require('pg')
 
-import { Post } from '../types'
-const options = {
-  // Initialization Options
-  promiseLib: promise
-};
-
-const postgresLocation = process.env.DATABASE_URL || 'postgres://localhost:5432'
-
-const pgp = require('pg-promise')(options);
-const connectionString = `${postgresLocation}/posts`;
-const db = pgp(connectionString);
+app.use(bodyParser.json());
+app.use(bodyParser.urlencoded({
+  extended: true
+}));
 
 app.use('/dist', express.static('dist'))
 app.use('/public', express.static('public'))
@@ -36,13 +30,10 @@ app.get('/', function (req: express.Request, res: express.Response) {
   `)
 })
 
-app.get('/api/posts', (req, res, next) => {
-  return db.many('select * from post')
-    .then((posts: Post[]) => {
-      return res.send(posts)
-    }).catch((err: Error) => {
-    }) 
-})
+app.get('/api/posts', getAllPosts)
+app.get('/api/posts/:id', getOnePost)
+app.post('/api/posts', createNewPost)
+app.delete('/api/posts/:id', deletePostById)
 
 
 app.listen(3000, function () {

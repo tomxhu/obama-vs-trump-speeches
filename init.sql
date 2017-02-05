@@ -4,7 +4,7 @@ CREATE DATABASE posts;
 \c posts;
 
 CREATE TABLE post (
-  ID SERIAL PRIMARY KEY,
+  id SERIAL PRIMARY KEY,
   eventName VARCHAR,
   obamaLink VARCHAR,
   trumpLink VARCHAR,
