@@ -10,7 +10,7 @@ const options = {
   promiseLib: promise
 };
 
-const postgresLocation = process.env.DB_URL || 'postgres://localhost:5432'
+const postgresLocation = process.env.DATABASE_URL || 'postgres://localhost:5432'
 
 const pgp = require('pg-promise')(options);
 const connectionString = `${postgresLocation}/posts`;
@@ -40,7 +40,8 @@ app.get('/api/posts', (req, res, next) => {
   return db.many('select * from post')
     .then((posts: Post[]) => {
       return res.send(posts)
-    })
+    }).catch((err: Error) => {
+    }) 
 })
 
 
